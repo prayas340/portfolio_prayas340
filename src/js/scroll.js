@@ -6,42 +6,46 @@ import { animateLangBars } from './github.js';
 gsap.registerPlugin(ScrollTrigger);
 
 export function initScroll() {
-  const scroll = new LocomotiveScroll({
-    el: document.querySelector('[data-scroll-container]'),
-    smooth: true,
-    multiplier: 0.85,
-    smartphone: { smooth: true },
-    tablet: { smooth: true },
-  });
+  const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-  scroll.on('scroll', ScrollTrigger.update);
+  let scroll = null;
 
-  ScrollTrigger.scrollerProxy('[data-scroll-container]', {
-    scrollTop(value) {
-      if (arguments.length) {
-        scroll.scrollTo(value, { duration: 0, disableLerp: true });
-        return value;
-      }
-      return scroll.scroll?.instance?.scroll?.y ?? 0;
-    },
-    getBoundingClientRect() {
-      return {
-        top: 0,
-        left: 0,
-        width: window.innerWidth,
-        height: window.innerHeight,
-      };
-    },
-    pinType: document.querySelector('[data-scroll-container]').style.transform
-      ? 'transform'
-      : 'fixed',
-  });
+  if (!isMobile) {
+    scroll = new LocomotiveScroll({
+      el: document.querySelector('[data-scroll-container]'),
+      smooth: true,
+      multiplier: 0.85,
+    });
 
-  ScrollTrigger.addEventListener('refresh', () => scroll.update());
-  ScrollTrigger.refresh();
+    scroll.on('scroll', ScrollTrigger.update);
+
+    ScrollTrigger.scrollerProxy('[data-scroll-container]', {
+      scrollTop(value) {
+        if (arguments.length) {
+          scroll.scrollTo(value, { duration: 0, disableLerp: true });
+          return value;
+        }
+        return scroll.scroll?.instance?.scroll?.y ?? 0;
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        };
+      },
+      pinType: document.querySelector('[data-scroll-container]').style.transform
+        ? 'transform'
+        : 'fixed',
+    });
+
+    ScrollTrigger.addEventListener('refresh', () => scroll.update());
+    ScrollTrigger.refresh();
+  }
 
   initRevealAnimations(scroll);
-  initCounters();
+  initCounters(scroll);
 
   // Handle smooth scroll to anchor links
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
@@ -50,10 +54,14 @@ export function initScroll() {
       const targetId = anchor.getAttribute('href');
       const target = document.querySelector(targetId);
       if (target) {
-        scroll.scrollTo(target, {
-          duration: 1000,
-          easing: [0.16, 1, 0.3, 1], // easeOutExpo
-        });
+        if (scroll) {
+          scroll.scrollTo(target, {
+            duration: 1000,
+            easing: [0.16, 1, 0.3, 1], // easeOutExpo
+          });
+        } else {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
       }
     });
   });
@@ -62,6 +70,8 @@ export function initScroll() {
 }
 
 function initRevealAnimations(scroll) {
+  const scrollerElement = scroll ? '[data-scroll-container]' : window;
+
   gsap.utils.toArray('.split-line').forEach((el) => {
     gsap.to(el, {
       opacity: 1,
@@ -70,7 +80,7 @@ function initRevealAnimations(scroll) {
       ease: 'power3.out',
       scrollTrigger: {
         trigger: el,
-        scroller: '[data-scroll-container]',
+        scroller: scrollerElement,
         start: 'top 88%',
         toggleActions: 'play none none reverse',
       },
@@ -95,7 +105,7 @@ function initRevealAnimations(scroll) {
       ease: 'power3.out',
       scrollTrigger: {
         trigger: el,
-        scroller: '[data-scroll-container]',
+        scroller: scrollerElement,
         start: 'top 85%',
         toggleActions: 'play none none reverse',
       },
@@ -111,7 +121,7 @@ function initRevealAnimations(scroll) {
       ease: 'power3.out',
       scrollTrigger: {
         trigger: item,
-        scroller: '[data-scroll-container]',
+        scroller: scrollerElement,
         start: 'top 92%',
         toggleActions: 'play none none reverse',
       },
@@ -127,7 +137,7 @@ function initRevealAnimations(scroll) {
       ease: 'power3.out',
       scrollTrigger: {
         trigger: card,
-        scroller: '[data-scroll-container]',
+        scroller: scrollerElement,
         start: 'top 88%',
         toggleActions: 'play none none reverse',
       },
@@ -136,7 +146,7 @@ function initRevealAnimations(scroll) {
 
   ScrollTrigger.create({
     trigger: '#github',
-    scroller: '[data-scroll-container]',
+    scroller: scrollerElement,
     start: 'top 70%',
     onEnter: animateLangBars,
     once: true,
@@ -149,21 +159,22 @@ function initRevealAnimations(scroll) {
     ease: 'power3.out',
     scrollTrigger: {
       trigger: '.github__panel',
-      scroller: '[data-scroll-container]',
+      scroller: scrollerElement,
       start: 'top 85%',
       toggleActions: 'play none none reverse',
     },
   });
-
 }
 
-function initCounters() {
+function initCounters(scroll) {
+  const scrollerElement = scroll ? '[data-scroll-container]' : window;
+
   document.querySelectorAll('.stat__number').forEach((el) => {
     const target = parseInt(el.dataset.count, 10);
 
     ScrollTrigger.create({
       trigger: el,
-      scroller: '[data-scroll-container]',
+      scroller: scrollerElement,
       start: 'top 90%',
       once: true,
       onEnter: () => {

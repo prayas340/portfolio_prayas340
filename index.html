@@ -199,8 +199,44 @@
           </div>
         </div>
         <div class="github__graph-wrap">
-          <p class="github__graph-label">Contribution activity</p>
-          <div class="github__graph" id="contribution-graph" aria-label="GitHub contribution graph"></div>
+          <div class="github__calendar-header">
+            <span class="github__calendar-count" id="contribution-count">Loading contributions…</span>
+            <div class="github__calendar-settings">
+              <span>Contribution settings</span>
+              <svg width="8" height="6" viewBox="0 0 24 18" fill="currentColor" aria-hidden="true" style="margin-left: 4px; opacity: 0.7;">
+                <path d="M12 18L0 0h24z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="github__calendar-box">
+            <div class="github__calendar-body">
+              <div class="github__day-labels" aria-hidden="true">
+                <span></span>
+                <span>Mon</span>
+                <span></span>
+                <span>Wed</span>
+                <span></span>
+                <span>Fri</span>
+                <span></span>
+              </div>
+              <div class="github__grid-container">
+                <div class="github__months" id="month-labels" aria-hidden="true"></div>
+                <div class="github__graph" id="contribution-graph" aria-label="GitHub contribution graph"></div>
+              </div>
+            </div>
+            <div class="github__calendar-footer">
+              <a href="https://docs.github.com/en/github/setting-up-and-managing-your-github-profile/managing-contribution-graphs-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile" target="_blank" class="github__footer-link">Learn how we count contributions</a>
+              <div class="github__legend" aria-hidden="true">
+                <span>Less</span>
+                <div class="github__cell" data-level="0"></div>
+                <div class="github__cell" data-level="1"></div>
+                <div class="github__cell" data-level="2"></div>
+                <div class="github__cell" data-level="3"></div>
+                <div class="github__cell" data-level="4"></div>
+                <span>More</span>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="github__languages">
           <p class="github__graph-label">Top languages</p>

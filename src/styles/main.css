@@ -687,7 +687,7 @@ img {
 /* GitHub */
 .github__panel {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
   gap: 2rem;
   padding: 2.5rem;
   background: var(--bg-card);
@@ -698,6 +698,7 @@ img {
 @media (max-width: 900px) {
   .github__panel {
     grid-template-columns: 1fr;
+    padding: 1.5rem;
   }
 }
 
@@ -735,6 +736,11 @@ img {
 .github__graph-wrap,
 .github__languages {
   grid-column: span 1;
+  min-width: 0;
+}
+
+.github__graph-wrap {
+  width: 100%;
 }
 
 @media (min-width: 901px) {
@@ -748,33 +754,177 @@ img {
   }
 }
 
-.github__graph-label {
+.github__calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0 4px;
+}
+
+.github__calendar-count {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.github__calendar-settings {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
   color: var(--text-muted);
-  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.github__calendar-settings:hover {
+  color: var(--text);
+}
+
+.github__calendar-box {
+  background: rgba(255, 255, 255, 0.015);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.25rem 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.github__calendar-body {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-end;
+  min-width: 0;
+  width: 100%;
+}
+
+.github__day-labels {
+  display: grid;
+  grid-template-rows: repeat(7, 11px);
+  gap: 3px;
+  height: 95px; /* (7 * 11px) + (6 * 3px) */
+  font-size: 9px;
+  color: var(--text-muted);
+  text-align: left;
+  line-height: 11px;
+  width: 22px;
+  flex-shrink: 0;
+  background: #141414; /* Prevent grid cells showing behind labels */
+  position: relative;
+  z-index: 2;
+}
+
+.github__day-labels span {
+  display: block;
+  height: 11px;
+}
+
+.github__grid-container {
+  flex: 1;
+  min-width: 0; /* Critical: allow flex child containing scrolling content to shrink */
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  padding-bottom: 6px;
+}
+
+.github__grid-container::-webkit-scrollbar {
+  height: 5px;
+}
+
+.github__grid-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.github__grid-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 100px;
+}
+
+.github__grid-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.github__months {
+  display: grid;
+  grid-template-columns: repeat(53, 11px);
+  gap: 3px;
+  height: 15px;
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.github__months span {
+  grid-row-start: 1;
+  text-align: left;
 }
 
 .github__graph {
   display: grid;
-  grid-template-columns: repeat(52, 1fr);
+  grid-template-rows: repeat(7, 11px);
+  grid-auto-flow: column;
+  grid-auto-columns: 11px;
   gap: 3px;
-  max-width: 100%;
-  overflow-x: auto;
+  width: max-content;
 }
 
 .github__cell {
-  aspect-ratio: 1;
+  width: 11px;
+  height: 11px;
   border-radius: 2px;
-  background: rgba(255, 255, 255, 0.06);
+  background: #161b22;
   transition: background 0.3s;
 }
 
-.github__cell[data-level='1'] { background: rgba(0, 170, 255, 0.25); }
-.github__cell[data-level='2'] { background: rgba(0, 170, 255, 0.45); }
-.github__cell[data-level='3'] { background: rgba(0, 170, 255, 0.65); }
-.github__cell[data-level='4'] { background: var(--accent-blue); }
+.github__cell[data-level='0'] { background: #161b22; }
+.github__cell[data-level='1'] { background: #0e4429; }
+.github__cell[data-level='2'] { background: #006d32; }
+.github__cell[data-level='3'] { background: #26a641; }
+.github__cell[data-level='4'] { background: #39d353; }
+
+.github__calendar-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 9px;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.github__footer-link {
+  color: var(--accent-blue);
+  text-decoration: none;
+  transition: opacity 0.3s;
+}
+
+.github__footer-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.github__legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--text-muted);
+}
+
+.github__legend span {
+  margin: 0 2px;
+}
+
+.github__legend .github__cell {
+  cursor: default;
+}
 
 .lang-bars {
   display: flex;
